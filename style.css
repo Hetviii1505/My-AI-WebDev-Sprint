@@ -1,12 +1,33 @@
-/* 1. Global Variables: The "Settings" of your UI */
-:root {
-    --bg-dark: #0f172a;        /* Deep navy background */
-    --bg-card: #1e293b;        /* Slightly lighter slate for boxes */
-    --primary: #3b82f6;        /* Modern blue accent */
-    --text-main: #f8fafc;      /* Off-white for readability */
-    --text-muted: #94a3b8;     /* Grayish text for secondary info */
-    --border: #334155;         /* Subtle border color */
+/* 1. Theme Definitions */
+
+/* Default: Midnight (Dark Slate) */
+:root, [data-theme="midnight"] {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --primary: #3b82f6;
+    --text-main: #f8fafc;
+    --border: #334155;
 }
+
+/* Theme: Emerald (Hacker/Matrix feel) */
+[data-theme="emerald"] {
+    --bg-dark: #064e3b;
+    --bg-card: #065f46;
+    --primary: #10b981;
+    --text-main: #ecfdf5;
+    --border: #059669;
+}
+
+/* Theme: Cyberpunk (High Contrast) */
+[data-theme="cyberpunk"] {
+    --bg-dark: #2d1b4e;
+    --bg-card: #4c1d95;
+    --primary: #f472b6;
+    --text-main: #ffffff;
+    --border: #7c3aed;
+}
+
+/* The rest of your CSS stays the same because it uses these variables! */
 
 /* 2. Reset and Base Styles */
 * {
@@ -119,3 +140,29 @@ button:hover {
         text-align: center;
     }
 }
+
+
+.theme-switcher {
+    display: flex;
+    gap: 8px;
+}
+
+.t-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    padding: 0; /* Override default button padding */
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 85%;
+}
+
+.system { background: rgba(255, 255, 255, 0.05); border-left: 4px solid var(--text-muted); }
+.ai { background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primary); align-self: flex-start; }
+.error { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; color: #fca5a5; }
