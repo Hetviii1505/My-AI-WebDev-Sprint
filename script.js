@@ -40,18 +40,52 @@ function validateGitHubUrl(url) {
 // 5. Processing Logic (Simulating the AI flow)
 function processAnalysis(url) {
     displayMessage(`Analyzing repository: ${url}...`, "system");
-    
-    // Change button state to "Loading"
     analyzeBtn.disabled = true;
-    analyzeBtn.innerText = "Analyzing...";
 
-    // Simulate a network delay (Day 13 will be the real AI call)
     setTimeout(() => {
-        displayMessage("Analysis Complete: Found 3 potential security vulnerabilities and 2 optimization points.", "ai");
+        // Logic to create a unique response based on the URL content
+        let report;
+        
+        if (url.includes("react") || url.includes("frontend")) {
+            report = {
+                title: "Frontend Analysis",
+                issues: ["Unused imports in App.js", "Large image assets found"],
+                score: 92
+            };
+        } else if (url.includes("node") || url.includes("backend")) {
+            report = {
+                title: "Backend Analysis",
+                issues: ["Outdated Express version", "Missing rate-limiting middleware"],
+                score: 78
+            };
+        } else {
+            report = {
+                title: "General Code Review",
+                issues: ["Missing README documentation", "No LICENSE file detected"],
+                score: 85
+            };
+        }
+
+        // Send the dynamic object to be displayed
+        renderReport(report);
+        
         analyzeBtn.disabled = false;
-        analyzeBtn.innerText = "Analyze Repo";
-        repoInput.value = ""; // Clear the input
-    }, 2000);
+        repoInput.value = "";
+    }, 1500);
+}
+
+// A new function to handle structured data
+function renderReport(data) {
+    let issueList = data.issues.map(issue => `<li>${issue}</li>`).join('');
+    
+    const htmlResponse = `
+        <div class="report-card">
+            <h4>${data.title}</h4>
+            <p><strong>Health Score:</strong> ${data.score}/100</p>
+            <ul>${issueList}</ul>
+        </div>
+    `;
+    displayMessage(htmlResponse, "ai");
 }
 
 // 6. UI Helper Function
@@ -67,3 +101,5 @@ function displayMessage(text, type) {
     chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+
