@@ -1,0 +1,121 @@
+/* 1. Global Variables: The "Settings" of your UI */
+:root {
+    --bg-dark: #0f172a;        /* Deep navy background */
+    --bg-card: #1e293b;        /* Slightly lighter slate for boxes */
+    --primary: #3b82f6;        /* Modern blue accent */
+    --text-main: #f8fafc;      /* Off-white for readability */
+    --text-muted: #94a3b8;     /* Grayish text for secondary info */
+    --border: #334155;         /* Subtle border color */
+}
+
+/* 2. Reset and Base Styles */
+* {
+    box-sizing: border-box;    /* Ensures padding doesn't break width */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;         /* Prevents the whole page from scrolling */
+}
+
+/* 3. Layout: Using Flexbox to create a full-screen app */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px); /* Modern frosted-glass effect */
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.accent {
+    color: var(--primary);
+}
+
+/* 4. Main Content Logic */
+.content-area {
+    flex: 1;                  /* Takes up all remaining vertical space */
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    max-width: 1000px;        /* Limits width on large screens */
+    margin: 0 auto;           /* Centers the app on desktop */
+    width: 100%;
+}
+
+#chat-window {
+    flex: 1;                  /* Pushes the input area to the bottom */
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow-y: auto;         /* Only the chat content scrolls */
+    margin-bottom: 1.5rem;
+}
+
+.message.system p {
+    color: var(--text-muted);
+    font-family: 'Courier New', Courier, monospace; /* Code-like feel */
+}
+
+/* 5. Input Area: Responsive Row */
+#input-area {
+    display: flex;
+    gap: 12px;
+}
+
+input {
+    flex: 1;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: var(--primary); /* Glow effect when typing */
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* 6. Responsive Adjustments (Mobile) */
+@media (max-width: 600px) {
+    #input-area {
+        flex-direction: column; /* Stack input and button on small phones */
+    }
+    
+    .main-header {
+        text-align: center;
+    }
+}

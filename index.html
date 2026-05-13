@@ -1,117 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My First App</title>
-    <style> 
-    :root {
-    --primary: #2563eb;
-    --bg: #0f172a; /* Trendy Dark Mode */
-    --text: #f8fafc;
-}
-
-body {
-    margin: 0;
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-}
-
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Full screen height */
-}
-
-/* Flexbox Layout */
-main {
-    flex: 1; /* Takes up all available space */
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-#chat-window {
-    flex: 1;
-    overflow-y: auto; /* Makes only the chat scrollable */
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-/* Responsive Input Area */
-#input-area {
-    display: flex;
-    gap: 10px;
-}
-
-input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #334155;
-    background: #1e293b;
-    color: white;
-}
-
-/* Media Query: For screens wider than 768px (Desktop) */
-@media (min-width: 768px) {
-    main {
-        max-width: 800px;
-        margin: 0 auto; /* Centers the app on desktop */
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-DevOps Orchestrator | Hetvi Patel</title>
+    <!-- Linking the external CSS file -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- The Main Container -->
+
     <div class="app-container">
-    <!-- 1. Header (Navigation) -->
-     <header>
-        <nav>AI-DevOps Orchestrator</nav>
-     </header>
+        <!-- Header: The top navigation bar -->
+        <header class="main-header">
+            <nav>
+                <span class="logo">AI-DevOps <span class="accent">Orchestrator</span></span>
+            </nav>
+        </header>
 
-    <!-- 2. Main Content Area -->
-    <main>
-        <!-- Section for AI Output (Scrollable) -->
-        <section id="chat-window">
-            <p>Welcome, Hetvi. Ready to scan your repo?</p>
-        </section>
-    </main>
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <!-- Section for AI interaction and code reports -->
+            <section id="chat-window">
+                <div class="message system">
+                    <p>System initialized. Ready for repository analysis.</p>
+                </div>
+            </section>
 
-        <!-- Section for User Input (Fixed at bottom) -->
-        <section id="input-area">
-            <input type="text" placeholder="Paste GitHub URL here...">
-            <button>Analyze</button>
-        </section>
-    </main> 
+            <!-- Section for User Input at the bottom -->
+            <section id="input-area">
+                <input type="text" id="repo-link" placeholder="Enter GitHub Repository URL (e.g., https://github.com/...)">
+                <button id="analyze-btn">Analyze Repo</button>
+            </section>
+        </main>
     </div>
+
+    <!-- Linking the external JavaScript file (for Day 3) -->
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
