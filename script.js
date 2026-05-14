@@ -1,6 +1,7 @@
-// Day 4: Centralized State
+
 const appState = {
     isAnalyzing: false,
+    lastReport: null, // New: Stores the most recent analysis data
     history: []
 };
 
@@ -74,35 +75,58 @@ function processAnalysis(url) {
     }, 2500);
 }
 
-// Day 5: Enhanced UI Rendering Logic
-function renderAdvancedReport(data) {
-    // 1. Transform the raw data array into a string of HTML elements
-    // This is "Mapping" - turning Data into UI
+// Step 1: Ensure renderAdvancedReport SAVES the data to state
+function renderAdvancedReport(data, isFilteredView = false) {
+    // CRITICAL: Save this report so the filter buttons can find it later
+    if (!isFilteredView) {
+        appState.lastReport = data; 
+    }
+
     const findingsHTML = data.findings.map(f => `
-        <div class="finding ${f.level.toLowerCase()}" role="alert">
-            <div class="finding-meta">
-                <span class="badge">${f.level}</span>
-                <span class="type">${f.type}</span>
-            </div>
-            <p class="finding-msg">${f.msg}</p>
+        <div class="finding ${f.level.toLowerCase()} animate-in">
+            <span class="badge">${f.level}</span>
+            <span class="type">${f.type}:</span> ${f.msg}
         </div>
     `).join('');
+
+    // If it's a filtered view, we don't want to create a NEW message bubble
+    // We want to update the LAST one.
+    if (isFilteredView) {
+        const lastAiMsg = chatWindow.querySelector('.message.ai:last-child .findings-list');
+        if (lastAiMsg) {
+            lastAiMsg.innerHTML = findingsHTML;
+            return; // Stop here
+        }
+    }
 
     const reportHTML = `
         <div class="report-card animate-in">
             <div class="report-header">
                 <strong>Analysis: ${data.repoName}</strong>
-                <span class="timestamp">${data.timestamp}</span>
             </div>
             <div class="findings-list">
                 ${findingsHTML}
             </div>
-            <div class="report-footer">
-                <button class="action-btn" onclick="copyReport('${data.repoName}')">Copy Summary</button>
-            </div>
         </div>
     `;
     displayMessage(reportHTML, "ai");
+}
+
+// Step 2: The Filter Function
+function filterFindings(level) {
+    console.log("Filtering for:", level); // Debugging line
+    
+    if (!appState.lastReport) {
+        console.error("No report found in state to filter!");
+        return;
+    }
+
+    const filtered = level === 'All' 
+        ? appState.lastReport.findings 
+        : appState.lastReport.findings.filter(f => f.level === level);
+
+    // Re-render only the findings part
+    renderAdvancedReport({ ...appState.lastReport, findings: filtered }, true);
 }
 
 // 2. Add a Utility function for interactivity
@@ -127,3 +151,19 @@ function displayMessage(text, type, id = null) {
     chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+function getPulseHTML(score) {
+    // Logic: Map a score (0-100) to a specific CSS color
+    let color = score > 80 ? '#10b981' : score > 50 ? '#f59e0b' : '#ef4444';
+    
+    return `
+        <div class="pulse-container">
+            <span class="pulse-label">Project Health Pulse</span>
+            <div class="pulse-bar-bg">
+                <div class="pulse-bar-fill" style="width: ${score}%; background: ${color};"></div>
+            </div>
+            <span class="pulse-value">${score}%</span>
+        </div>
+    `;
+}
+
