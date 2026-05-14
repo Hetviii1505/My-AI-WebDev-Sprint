@@ -26,6 +26,13 @@
 
         <!-- Main Content Area -->
         <main class="content-area">
+            <div class="dashboard-controls">
+                    <div class="filter-group">
+                       <button class="ctrl-btn" onclick="filterFindings('All')">All</button>
+                       <button class="ctrl-btn" onclick="filterFindings('High')">Critical</button>
+                    </div>
+                    <button class="clear-btn" onclick="clearHistory()">Clear Terminal</button>
+            </div>
             <!-- Section for AI interaction and code reports -->
             <section id="chat-window">
                 <div class="message system">
