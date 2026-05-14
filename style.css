@@ -348,3 +348,32 @@ button:hover {
 .clear-btn:hover {
     opacity: 1;
 }
+
+.language-stack {
+    display: flex;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.lang-segment {
+    height: 100%;
+    transition: width 1s ease;
+}
+
+.lang-legend {
+    display: flex;
+    gap: 15px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}

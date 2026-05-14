@@ -63,32 +63,39 @@ async function processAnalysis(url) {
     updateUIState(true);
     displayMessage(`Connecting to GitHub API for ${repo}...`, "system");
 
-    try {
-        // CALLING REAL DATA
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-        
-        if (!response.ok) throw new Error("Repository not found or private.");
+try {
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    if (!response.ok) throw new Error("Repository not found.");
+    const githubData = await response.json();
 
-        const githubData = await response.json();
+    // NEW: Fetch language breakdown
+    const langResponse = await fetch(githubData.languages_url);
+    const languages = await langResponse.json();
 
-        // Map real data to our report structure
-        const analysisData = {
-            repoName: githubData.name,
-            timestamp: new Date().toLocaleTimeString(),
-            score: Math.min(githubData.stargazers_count + 50, 100), // Simple logic for Day 8
-            findings: [
-                { id: 1, type: "Info", level: "Low", msg: `Description: ${githubData.description || "No description"}` },
-                { id: 2, type: "Stats", level: "Medium", msg: `Stars: ${githubData.stargazers_count} | Forks: ${githubData.forks_count}` },
-                { id: 3, type: "Language", level: "Low", msg: `Primary Language: ${githubData.language}` }
-            ]
+    // Calculate Percentages
+    const totalBytes = Object.values(languages).reduce((a, b) => a + b, 0);
+    const langReport = Object.entries(languages).map(([name, bytes]) => {
+        return { 
+            name, 
+            percent: Math.round((bytes / totalBytes) * 100) 
         };
+    }).slice(0, 3); // Take top 3 languages
 
-        renderAdvancedReport(analysisData);
-        appState.lastReport = analysisData;
-        
-    } catch (error) {
-        displayMessage(`System Error: ${error.message}`, "error");
-    } finally {
+    const analysisData = {
+        repoName: githubData.name,
+        timestamp: new Date().toLocaleTimeString(),
+        score: Math.min(githubData.stargazers_count + 50, 100),
+        languages: langReport, // New data field
+        findings: [
+            { id: 1, type: "Stats", level: "Low", msg: `Open Issues: ${githubData.open_issues_count}` },
+            { id: 2, type: "Security", level: "Medium", msg: githubData.has_wiki ? "Wiki enabled (Check for public edit permissions)" : "No Wiki detected." }
+        ]
+    };
+
+    renderAdvancedReport(analysisData);
+} catch (error) {
+    displayMessage(`Error: ${error.message}`, "error");
+} finally {
         appState.isAnalyzing = false;
         updateUIState(false);
     }
