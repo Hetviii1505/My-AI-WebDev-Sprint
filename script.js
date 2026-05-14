@@ -44,35 +44,54 @@ function validateGitHubUrl(url) {
     return pattern.test(url);
 }
 
-// 5. Processing Logic (Simulating the AI flow)
-function processAnalysis(url) {
+// 5. Processing Logic (Simulating the AI flow) with Real GitHub API Integration
+async function processAnalysis(url) {
     if (appState.isAnalyzing) return;
+
+    // Extract username and repo name from the URL
+    // Format: https://github.com/username/reponame
+    const parts = url.replace('https://github.com/', '').split('/');
+    const owner = parts[0];
+    const repo = parts[1];
+
+    if (!owner || !repo) {
+        displayMessage("Error: Invalid GitHub format.", "error");
+        return;
+    }
 
     appState.isAnalyzing = true;
     updateUIState(true);
-    
-    // Create a temporary "Thinking" bubble
-    const typingId = "typing-" + Date.now();
-    displayMessage("AI Orchestrator is scanning branches...", "system", typingId);
+    displayMessage(`Connecting to GitHub API for ${repo}...`, "system");
 
-    setTimeout(() => {
-        // Remove the "Thinking" bubble before showing the report
-        const typingElement = document.getElementById(typingId);
-        if (typingElement) typingElement.remove();
+    try {
+        // CALLING REAL DATA
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+        
+        if (!response.ok) throw new Error("Repository not found or private.");
 
+        const githubData = await response.json();
+
+        // Map real data to our report structure
         const analysisData = {
-            repoName: url.split('/').pop(),
+            repoName: githubData.name,
             timestamp: new Date().toLocaleTimeString(),
+            score: Math.min(githubData.stargazers_count + 50, 100), // Simple logic for Day 8
             findings: [
-                { id: 1, type: "Security", level: "High", msg: "Exposed .env file detected in root." },
-                { id: 2, type: "Logic", level: "Medium", msg: "Possible infinite loop in data-parser.js line 42." }
+                { id: 1, type: "Info", level: "Low", msg: `Description: ${githubData.description || "No description"}` },
+                { id: 2, type: "Stats", level: "Medium", msg: `Stars: ${githubData.stargazers_count} | Forks: ${githubData.forks_count}` },
+                { id: 3, type: "Language", level: "Low", msg: `Primary Language: ${githubData.language}` }
             ]
         };
 
         renderAdvancedReport(analysisData);
+        appState.lastReport = analysisData;
+        
+    } catch (error) {
+        displayMessage(`System Error: ${error.message}`, "error");
+    } finally {
         appState.isAnalyzing = false;
         updateUIState(false);
-    }, 2500);
+    }
 }
 
 // Step 1: Ensure renderAdvancedReport SAVES the data to state
@@ -167,3 +186,20 @@ function getPulseHTML(score) {
     `;
 }
 
+// State Reset Logic
+function clearHistory() {
+    // 1. Reset the Application State
+    appState.history = [];
+    appState.lastReport = null;
+    appState.isAnalyzing = false;
+
+    // 2. Clear the UI
+    chatWindow.innerHTML = `
+        <div class="message system">
+            <p>System memory cleared. Ready for new repository analysis.</p>
+        </div>
+    `;
+
+    // 3. Reset UI elements (like the button)
+    updateUIState(false);
+}
